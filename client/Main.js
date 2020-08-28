@@ -13,6 +13,7 @@ export default class Main extends React.Component {
     selectedAlbum: {}
   }
   this.selectAlbum = this.selectAlbum.bind(this)
+  this.changeBackToEmpty = this.changeBackToEmpty.bind(this);
  }
 
  async componentDidMount(){
@@ -32,10 +33,14 @@ export default class Main extends React.Component {
   }
 }
 
+changeBackToEmpty(){
+  this.setState({ selectedAlbum: {} })
+}
+
   render () {
     return (
     <div id='main' className='row container'>
-      <SideBar />
+      <SideBar changeBackToEmpty={this.changeBackToEmpty} />
       <div className='container'>
       { this.returnedAlbumState()}
       <Player />
