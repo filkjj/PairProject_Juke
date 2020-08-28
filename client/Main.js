@@ -1,6 +1,7 @@
 import React from 'react'
 import SideBar from './sidebar'
 import AllAlbums from './AllAlbums'
+import SingleAlbum from './SingleAlbum'
 import Player from './Player'
 import axios from 'axios'
 
@@ -8,24 +9,39 @@ export default class Main extends React.Component {
  constructor(){
    super();
    this.state ={
-    albums : [] 
+    albums : [] ,
+    selectedAlbum: {}
   }
+  this.selectAlbum = this.selectAlbum.bind(this)
  }
 
  async componentDidMount(){
   const data = await axios.get('/api/albums');
   this.setState({albums:data.data});
  }
+ async selectAlbum(album) {
+    const albumPlusSongs = await axios.get(`/api/albums/${album.id}`)
+    this.setState({ selectedAlbum: albumPlusSongs.data })
+ }
+ returnedAlbumState() {
+  if (Object.keys(this.state.selectedAlbum).length === 0) {
+    return(<AllAlbums albums={this.state.albums} selectAlbum={ this.selectAlbum }/> )
+  }
+  else {
+    return(<SingleAlbum album={this.state.selectedAlbum} />)
+  }
+}
 
   render () {
     return (
     <div id='main' className='row container'>
       <SideBar />
-      <div class='container'>
-      <AllAlbums albums={this.state.albums}/>
+      <div className='container'>
+      { this.returnedAlbumState()}
       <Player />
       </div>
     </div>
     )
   }
 }
+
